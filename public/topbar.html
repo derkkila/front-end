@@ -127,6 +127,8 @@ _________________________________________________________ -->
             contentType: "application/json; charset=utf-8"
         });
 
+        BOOMR.addVar({"GUID":$.cookie('GUID')});
+
         if ($.cookie('logged_in') != null && $.cookie('logged_in') != "") {
 
             username($.cookie('logged_in'), function (username) {
@@ -135,6 +137,7 @@ _________________________________________________________ -->
                     $("#register").remove();
                     $("#howdy").append('<a href="#">Logged in as ' + username + '<\/a>').hide().fadeIn(200);
                     $("#logout").hide().fadeIn(200);
+                    BOOMR.addVar({"username":username});
                 } else {
                     $("#howdy").remove()
                     $("#logout").remove()

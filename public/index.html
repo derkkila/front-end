@@ -37,6 +37,30 @@
 
     <link rel="shortcut icon" href="favicon.png">
 
+    <!--    Boomerang.js  Browser Code    -->
+    <script src="js/boomerang/boomerang.js"></script>
+    <script src="js/boomerang/plugins/rt.js"></script>
+    <script src="js/boomerang/plugins/bw.js"></script>
+    <script src="js/boomerang/plugins/dns.js"></script>
+    <script src="js/boomerang/plugins/navtiming.js"></script>
+    <script src="js/boomerang/plugins/guid.js"></script>
+    <script src="js/boomerang/plugins/mobile.js"></script>
+
+    <script>
+      BOOMR.init({
+        beacon_url: "http://search.tokamak.ga:8088/services/collector/raw?channel=38ac1295-2ec6-4c5a-8605-487773555a40",
+        beacon_type: "POST",
+        beacon_auth_token: "Splunk 38ac1295-2ec6-4c5a-8605-487773555a40",
+        site_domain: "Buttercup-Go"
+      });
+
+      BOOMR.addVar({ "ua_raw" : navigator.userAgent ,
+                     "appName"   : "WeaveSocks",
+                     "page" : document.title   });
+
+    </script>
+
+
 
 </head>
 
