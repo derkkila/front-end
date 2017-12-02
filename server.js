@@ -17,6 +17,7 @@ var request      = require("request")
 
 
 app.use(helpers.rewriteSlash);
+app.use(morgan("common", {}));
 app.use(metrics);
 app.use(express.static("public"));
 if(process.env.SESSION_REDIS) {
@@ -31,7 +32,6 @@ else {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helpers.sessionMiddleware);
-app.use(morgan("common", {}));
 
 var domain = "";
 process.argv.forEach(function (val, index, array) {
