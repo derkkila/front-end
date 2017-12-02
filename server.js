@@ -31,7 +31,7 @@ else {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helpers.sessionMiddleware);
-app.use(morgan("dev", {}));
+app.use(morgan("common", {}));
 
 var domain = "";
 process.argv.forEach(function (val, index, array) {
