@@ -17,7 +17,7 @@ var request      = require("request")
 
 
 app.use(helpers.rewriteSlash);
-app.use(morgan("common", {}));
+app.use(morgan("combined", {}));
 app.use(metrics);
 app.use(express.static("public"));
 if(process.env.SESSION_REDIS) {
