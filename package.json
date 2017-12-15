@@ -28,7 +28,8 @@
     "serve-static": "^1.10.2",
     "prom-client": "^6.3.0",
     "morgan": "^1.7.0",
-    "connect-redis": "^3.2.0"
+    "connect-redis": "^3.2.0",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

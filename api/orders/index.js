@@ -6,10 +6,11 @@
     , request   = require("request")
     , endpoints = require("../endpoints")
     , helpers   = require("../../helpers")
+    , logger    = require("winston")
     , app       = express()
 
   app.get("/orders", function (req, res, next) {
-    console.log("Request received with body: " + JSON.stringify(req.body));
+    logger.info("Request received with body: " + JSON.stringify(req.body));
     var logged_in = req.cookies.logged_in;
     if (!logged_in) {
       throw new Error("User not logged in.");
@@ -23,9 +24,9 @@
             if (error) {
               return callback(error);
             }
-            console.log("Received response: " + JSON.stringify(body));
+            logger.info("Received response: " + JSON.stringify(body));
             if (response.statusCode == 404) {
-              console.log("No orders found for user: " + custId);
+              logger.info("No orders found for user: " + custId);
               return callback(null, []);
             }
             callback(null, JSON.parse(body)._embedded.customerOrders);
@@ -46,7 +47,7 @@
   });
 
   app.post("/orders", function(req, res, next) {
-    console.log("Request received with body: " + JSON.stringify(req.body));
+    logger.info("Request received with body: " + JSON.stringify(req.body));
     var logged_in = req.cookies.logged_in;
     if (!logged_in) {
       throw new Error("User not logged in.");
@@ -62,7 +63,7 @@
               callback(error);
               return;
             }
-            console.log("Received response: " + JSON.stringify(body));
+            logger.info("Received response: " + JSON.stringify(body));
             var jsonBody = JSON.parse(body);
             var customerlink = jsonBody._links.customer.href;
             var addressLink = jsonBody._links.addresses.href;
@@ -79,13 +80,13 @@
         function (order, addressLink, cardLink, callback) {
           async.parallel([
               function (callback) {
-                console.log("GET Request to: " + addressLink);
+                logger.info("GET Request to: " + addressLink);
                 request.get(addressLink, function (error, response, body) {
                   if (error) {
                     callback(error);
                     return;
                   }
-                  console.log("Received response: " + JSON.stringify(body));
+                  logger.info("Received response: " + JSON.stringify(body));
                   var jsonBody = JSON.parse(body);
                   if (jsonBody.status_code !== 500 && jsonBody._embedded.address[0] != null) {
                     order.address = jsonBody._embedded.address[0]._links.self.href;
@@ -94,13 +95,13 @@
                 });
               },
               function (callback) {
-                console.log("GET Request to: " + cardLink);
+                logger.info("GET Request to: " + cardLink);
                 request.get(cardLink, function (error, response, body) {
                   if (error) {
                     callback(error);
                     return;
                   }
-                  console.log("Received response: " + JSON.stringify(body));
+                  logger.info("Received response: " + JSON.stringify(body));
                   var jsonBody = JSON.parse(body);
                   if (jsonBody.status_code !== 500 && jsonBody._embedded.card[0] != null) {
                     order.card = jsonBody._embedded.card[0]._links.self.href;
@@ -113,7 +114,7 @@
               callback(err);
               return;
             }
-            console.log(result);
+            logger.info(result);
             callback(null, order);
           });
         },
@@ -124,13 +125,13 @@
             json: true,
             body: order
           };
-          console.log("Posting Order: " + JSON.stringify(order));
+          logger.info("Posting Order: " + JSON.stringify(order));
           request(options, function (error, response, body) {
             if (error) {
               return callback(error);
             }
-            console.log("Order response: " + JSON.stringify(response));
-            console.log("Order response: " + JSON.stringify(body));
+            logger.info("Order response: " + JSON.stringify(response));
+            logger.info("Order response: " + JSON.stringify(body));
             callback(null, response.statusCode, body);
           });
         }

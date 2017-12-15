@@ -1,7 +1,7 @@
 (function (){
   'use strict';
 
-  var util = require('util');
+  var util = require('util'), logger = require("winston");
 
   var domain = "";
   process.argv.forEach(function (val, index, array) {
@@ -9,7 +9,7 @@
     if (arg.length > 1) {
       if (arg[0] == "--domain") {
         domain = "." + arg[1];
-        console.log("Setting domain to:", domain);
+        logger.info("Setting domain to:", domain);
       }
     }
   });

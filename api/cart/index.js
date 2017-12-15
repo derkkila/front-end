@@ -6,13 +6,15 @@
     , request   = require("request")
     , helpers   = require("../../helpers")
     , endpoints = require("../endpoints")
+    , logger    = require("winston")
     , app       = express()
 
   // List items in cart for current logged in user.
   app.get("/cart", function (req, res, next) {
-    console.log("Request received: " + req.url + ", " + req.query.custId);
+    logger.info("Request received: " + req.url + ", " + req.query.custId);
     var custId = helpers.getCustomerId(req, app.get("env"));
-    console.log("Customer ID: " + custId);
+    logger.info("Customer ID: " + custId);
+    
     request(endpoints.cartsUrl + "/" + custId + "/items", function (error, response, body) {
       if (error) {
         return next(error);
@@ -24,7 +26,7 @@
   // Delete cart
   app.delete("/cart", function (req, res, next) {
     var custId = helpers.getCustomerId(req, app.get("env"));
-    console.log('Attempting to delete cart for user: ' + custId);
+    logger.info('Attempting to delete cart for user: ' + custId);
     var options = {
       uri: endpoints.cartsUrl + "/" + custId,
       method: 'DELETE'
@@ -33,7 +35,7 @@
       if (error) {
         return next(error);
       }
-      console.log('User cart deleted with status: ' + response.statusCode);
+      logger.info('User cart deleted with status: ' + response.statusCode);
       helpers.respondStatus(res, response.statusCode);
     });
   });
@@ -44,7 +46,7 @@
       return next(new Error("Must pass id of item to delete"), 400);
     }
 
-    console.log("Delete item from cart: " + req.url);
+    logger.info("Delete item from cart: " + req.url);
 
     var custId = helpers.getCustomerId(req, app.get("env"));
 
@@ -56,14 +58,14 @@
       if (error) {
         return next(error);
       }
-      console.log('Item deleted with status: ' + response.statusCode);
+      logger.info('Item deleted with status: ' + response.statusCode);
       helpers.respondStatus(res, response.statusCode);
     });
   });
 
   // Add new item to cart
   app.post("/cart", function (req, res, next) {
-    console.log("Attempting to add to cart: " + JSON.stringify(req.body));
+    logger.info("Attempting to add to cart: " + JSON.stringify(req.body));
 
     if (req.body.id == null) {
       next(new Error("Must pass id of item to add"), 400);
@@ -75,7 +77,7 @@
     async.waterfall([
         function (callback) {
           request(endpoints.catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
-            console.log(body);
+            logger.info(body);
             callback(error, JSON.parse(body));
           });
         },
@@ -86,7 +88,7 @@
             json: true,
             body: {itemId: item.id, unitPrice: item.price}
           };
-          console.log("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
+          logger.info("POST to carts: " + options.uri + " body: " + JSON.stringify(options.body));
           request(options, function (error, response, body) {
             if (error) {
               callback(error)
@@ -108,7 +110,7 @@
 
 // Update cart item
   app.post("/cart/update", function (req, res, next) {
-    console.log("Attempting to update cart item: " + JSON.stringify(req.body));
+    logger.info("Attempting to update cart item: " + JSON.stringify(req.body));
     
     if (req.body.id == null) {
       next(new Error("Must pass id of item to update"), 400);
@@ -123,7 +125,7 @@
     async.waterfall([
         function (callback) {
           request(endpoints.catalogueUrl + "/catalogue/" + req.body.id.toString(), function (error, response, body) {
-            console.log(body);
+            logger.info(body);
             callback(error, JSON.parse(body));
           });
         },
@@ -134,7 +136,7 @@
             json: true,
             body: {itemId: item.id, quantity: parseInt(req.body.quantity), unitPrice: item.price}
           };
-          console.log("PATCH to carts: " + options.uri + " body: " + JSON.stringify(options.body));
+          logger.info("PATCH to carts: " + options.uri + " body: " + JSON.stringify(options.body));
           request(options, function (error, response, body) {
             if (error) {
               callback(error)

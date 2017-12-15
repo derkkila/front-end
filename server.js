@@ -16,16 +16,29 @@ var request      = require("request")
   , app          = express()
 
 
+//Initiate winston logging please
+const logger = require("winston")
+var consoleLoggingConfig = {
+      timestamp: true,
+      level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info",
+      handleExceptions: true,
+      humanReadableUnhandledException: true
+}
+logger.remove(logger.transports.Console);
+logger.add(logger.transports.Console, consoleLoggingConfig)
+logger.info('Winston logging initiated', consoleLoggingConfig)
+module.exports=logger
+
 app.use(helpers.rewriteSlash);
 app.use(morgan("combined", {}));
 app.use(metrics);
 app.use(express.static("public"));
 if(process.env.SESSION_REDIS) {
-    console.log('Using the redis based session manager');
+    logger.info('Using the redis based session manager');
     app.use(session(config.session_redis));
 }
 else {
-    console.log('Using local session manager');
+    logger.info('Using local session manager');
     app.use(session(config.session));
 }
 
@@ -39,7 +52,7 @@ process.argv.forEach(function (val, index, array) {
   if (arg.length > 1) {
     if (arg[0] == "--domain") {
       domain = arg[1];
-      console.log("Setting domain to:", domain);
+      logger.info("Setting domain to:", domain);
     }
   }
 });
@@ -54,5 +67,5 @@ app.use(helpers.errorHandler);
 
 var server = app.listen(process.env.PORT || 8079, function () {
   var port = server.address().port;
-  console.log("App now running in %s mode on port %d", app.get("env"), port);
+  logger.info("App now running in %s mode on port %d", app.get("env"), port);
 });

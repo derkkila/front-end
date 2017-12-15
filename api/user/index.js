@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var async = require("async"), express = require("express"), request = require("request"), endpoints = require("../endpoints"), helpers = require("../../helpers"), app = express(), cookie_name = "logged_in"
+    var async = require("async"), express = require("express"), request = require("request"), endpoints = require("../endpoints"), helpers = require("../../helpers"), logger = require("winston"), app = express(), cookie_name = "logged_in"
 
 
     app.get("/customers/:id", function(req, res, next) {
@@ -30,7 +30,7 @@
             body: req.body
         };
 
-        console.log("Posting Customer: " + JSON.stringify(req.body));
+        logger.info("Posting Customer: " + JSON.stringify(req.body));
 
         request(options, function(error, response, body) {
             if (error) {
@@ -51,7 +51,7 @@
             json: true,
             body: req.body
         };
-        console.log("Posting Address: " + JSON.stringify(req.body));
+        logger.info("Posting Address: " + JSON.stringify(req.body));
         request(options, function(error, response, body) {
             if (error) {
                 return next(error);
@@ -115,7 +115,7 @@
             json: true,
             body: req.body
         };
-        console.log("Posting Card: " + JSON.stringify(req.body));
+        logger.info("Posting Card: " + JSON.stringify(req.body));
         request(options, function(error, response, body) {
             if (error) {
                 return next(error);
@@ -128,7 +128,7 @@
 
     // Delete Customer - TO BE USED FOR TESTING ONLY (for now)
     app.delete("/customers/:id", function(req, res, next) {
-        console.log("Deleting Customer " + req.params.id);
+        logger.info("Deleting Customer " + req.params.id);
         var options = {
             uri: endpoints.customersUrl + "/" + req.params.id,
             method: 'DELETE'
@@ -145,7 +145,7 @@
 
     // Delete Address - TO BE USED FOR TESTING ONLY (for now)
     app.delete("/addresses/:id", function(req, res, next) {
-        console.log("Deleting Address " + req.params.id);
+        logger.info("Deleting Address " + req.params.id);
         var options = {
             uri: endpoints.addressUrl + "/" + req.params.id,
             method: 'DELETE'
@@ -162,7 +162,7 @@
 
     // Delete Card - TO BE USED FOR TESTING ONLY (for now)
     app.delete("/cards/:id", function(req, res, next) {
-        console.log("Deleting Card " + req.params.id);
+        logger.info("Deleting Card " + req.params.id);
         var options = {
             uri: endpoints.cardsUrl + "/" + req.params.id,
             method: 'DELETE'
@@ -185,7 +185,7 @@
             body: req.body
         };
 
-        console.log("Posting Customer: " + JSON.stringify(req.body));
+        logger.info("Posting Customer: " + JSON.stringify(req.body));
 
         async.waterfall([
                 function(callback) {
@@ -199,20 +199,20 @@
                                 callback(body.error);
                                 return;
                             }
-                            console.log(body);
+                            logger.info(body);
                             var customerId = body.id;
-                            console.log(customerId);
+                            logger.info(customerId);
                             req.session.customerId = customerId;
                             callback(null, customerId);
                             return;
                         }
-                        console.log(response.statusCode);
+                        logger.info(response.statusCode);
                         callback(true);
                     });
                 },
                 function(custId, callback) {
                     var sessionId = req.session.id;
-                    console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
+                    logger.info("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
                     var options = {
                         uri: endpoints.cartsUrl + "/" + custId + "/merge" + "?sessionId=" + sessionId,
@@ -223,24 +223,24 @@
                             if(callback) callback(error);
                             return;
                         }
-                        console.log('Carts merged.');
+                        logger.info('Carts merged.');
                         if(callback) callback(null, custId);
                     });
                 }
             ],
             function(err, custId) {
                 if (err) {
-                    console.log("Error with log in: " + err);
+                    logger.error("Error with log in: " + err);
                     res.status(500);
                     res.end();
                     return;
                 }
-                console.log("set cookie" + custId);
+                logger.info("set cookie" + custId);
                 res.status(200);
                 res.cookie(cookie_name, req.session.id, {
                     maxAge: 3600000
                 }).send({id: custId});
-                console.log("Sent cookies.");
+                logger.info("Sent cookies.");
                 res.end();
                 return;
             }
@@ -248,7 +248,7 @@
     });
 
     app.get("/login", function(req, res, next) {
-        console.log("Received login request");
+        logger.info("Received login request");
 
         async.waterfall([
                 function(callback) {
@@ -264,20 +264,20 @@
                             return;
                         }
                         if (response.statusCode == 200 && body != null && body != "") {
-                            console.log(body);
+                            logger.info(body);
                             var customerId = JSON.parse(body).user.id;
-                            console.log(customerId);
+                            logger.info(customerId);
                             req.session.customerId = customerId;
                             callback(null, customerId);
                             return;
                         }
-                        console.log(response.statusCode);
+                        logger.info(response.statusCode);
                         callback(true);
                     });
                 },
                 function(custId, callback) {
                     var sessionId = req.session.id;
-                    console.log("Merging carts for customer id: " + custId + " and session id: " + sessionId);
+                    logger.info("Merging carts for customer id: " + custId + " and session id: " + sessionId);
 
                     var options = {
                         uri: endpoints.cartsUrl + "/" + custId + "/merge" + "?sessionId=" + sessionId,
@@ -286,17 +286,17 @@
                     request(options, function(error, response, body) {
                         if (error) {
                             // if cart fails just log it, it prevenst login
-                            console.log(error);
+                            logger.info(error);
                             //return;
                         }
-                        console.log('Carts merged.');
+                        logger.info('Carts merged.');
                         callback(null, custId);
                     });
                 }
             ],
             function(err, custId) {
                 if (err) {
-                    console.log("Error with log in: " + err);
+                    logger.error("Error with log in: " + err);
                     res.status(401);
                     res.end();
                     return;
@@ -305,7 +305,7 @@
                 res.cookie(cookie_name, req.session.id, {
                     maxAge: 3600000
                 }).send('Cookie is set');
-                console.log("Sent cookies.");
+                logger.info("Sent cookies.");
                 res.end();
                 return;
             });
