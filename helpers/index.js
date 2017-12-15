@@ -2,6 +2,7 @@
   'use strict';
 
   var request = require("request");
+  var logger = require("winston");
   var helpers = {};
 
   /* Public: errorHandler is a middleware that handles your errors
@@ -13,13 +14,15 @@
    * */
 
   helpers.errorHandler = function(err, req, res, next) {
+    logger.error("I GOT HERE!!!")
+    logger.error(logger.exception.getAllInfo(err))
     var ret = {
       message: err.message,
       error:   err
     };
     res.
       status(err.status || 500).
-      send(ret);
+      send("Uh oh! Something went terribly wrong here. My Bad!");
   };
 
   helpers.sessionMiddleware = function(err, req, res, next) {
