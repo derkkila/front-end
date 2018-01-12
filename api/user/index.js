@@ -258,6 +258,26 @@
                         },
                         uri: endpoints.loginUrl
                     };
+
+                    //Simulate the ability for the system to login with multiple identity providers by pulling the requested idp from the request headers
+                    var identityProvider = "BUTTERCUP_GAMES"
+                    if (req.get("IdentityProvider")) {
+                       identityProvider = req.get("IdentityProvider").toUpperCase()
+                    }
+
+                    if (["GOOGLE", "FACEBOOK", "BUTTERCUP_GAMES"].indexOf(identityProvider)<0) {
+                        callback("Unsupported IdentityProvider header passed " + identityProvider)
+                    }
+
+                    //Simulate a login failure for the google IDP for no good reason just yet
+                    if (identityProvider == "BUTTERCUP_GAMES"){
+                        var someConfigNotCompatabileWithButtercupAuth = process.env.BREAK_BUTTERCUP
+
+                        if (someConfigNotCompatabileWithButtercupAuth) {
+                            callback("Configuration BREAK_BUTTERCUP read from environment variable is not compatible with the Buttercup Games identity provider. Please remove this environment variable")
+                        }
+                    }
+
                     request(options, function(error, response, body) {
                         if (error) {
                             callback(error);
@@ -268,10 +288,15 @@
                             var customerId = JSON.parse(body).user.id;
                             logger.info(customerId);
                             req.session.customerId = customerId;
+
+                            logger.info("Authentication successful for identity provider: " + identityProvider)
+                            req.session.identityProvider = identityProvider
+
                             callback(null, customerId);
                             return;
                         }
-                        logger.info(response.statusCode);
+
+                        logger.error("Unexpected response code from the login service during login: " + response.statusCode);
                         callback(true);
                     });
                 },

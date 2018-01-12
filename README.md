@@ -6,6 +6,54 @@ Front-end app
 ---
 Front-end application written in [Node.js](https://nodejs.org/en/) that puts together all of the microservices under [microservices-demo](https://github.com/microservices-demo/microservices-demo).
 
+#Situational configurations
+This application has been coded to behave specific ways based on various configurations and inputs to simulate real world issues application developers will face. The table below outlines these configurations
+<table>
+  <thead>
+    <tr>
+      <th>Situation</th>
+      <th>Configuration</th>
+      <th>Manifestation</th>
+    </tr>
+  </thead>
+  <tr>
+    <td>Simulate login from Google or Facebook IdP</td>
+    <td>Provide request header "IdentityProvider" on login request. Google or Facebook. Omit header for default Buttercup Games IdP</td>
+    <td>Will emit an information log in front-end winston logs indicating the identity provider used during the authentication request. Will fail the authentication request and emit log if header is not Google, Facebook or Buttercup_Games</td>
+  </tr>
+  <tr>
+    <td>Simulate login failures for Buttercup Game IdP</td>
+    <td>Set environment variable in front-end container BREAK_BUTTERCUP to any value. Remove environment variable to restore operations</td>
+    <td>Will fail all authorization requests for Buttercup Games IdP and emit error log to fron-end winston logs</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+
 # Build
 
 ## Dependencies
