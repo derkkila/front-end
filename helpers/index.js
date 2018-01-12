@@ -14,7 +14,6 @@
    * */
 
   helpers.errorHandler = function(err, req, res, next) {
-    logger.error("I GOT HERE!!!")
     logger.error(logger.exception.getAllInfo(err))
     var ret = {
       message: err.message,
