@@ -267,6 +267,7 @@
 
                     if (["GOOGLE", "FACEBOOK", "BUTTERCUP_GAMES"].indexOf(identityProvider)<0) {
                         callback("Unsupported IdentityProvider header passed " + identityProvider)
+                        return;
                     }
 
                     //Simulate a login failure for the google IDP for no good reason just yet
@@ -275,6 +276,7 @@
 
                         if (someConfigNotCompatabileWithButtercupAuth) {
                             callback("Configuration BREAK_BUTTERCUP read from environment variable is not compatible with the Buttercup Games identity provider. Please remove this environment variable")
+                            return;
                         }
                     }
 
@@ -296,8 +298,7 @@
                             return;
                         }
 
-                        logger.error("Unexpected response code from the login service during login: " + response.statusCode);
-                        callback(true);
+                        callback("Unexpected response code from the login service during login: " + response.statusCode);
                     });
                 },
                 function(custId, callback) {
