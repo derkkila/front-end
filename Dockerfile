@@ -14,6 +14,7 @@ USER myuser
 RUN yarn install
 
 COPY . /usr/src/app
+RUN mkdir ./runtime_config/
 
 # Start the app
 CMD ["/usr/local/bin/npm", "start"]
