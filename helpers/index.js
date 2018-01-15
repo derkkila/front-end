@@ -3,6 +3,7 @@
 
   var request = require("request");
   var logger = require("winston");
+  var fs = require("fs");
   var helpers = {};
 
   /* Public: errorHandler is a middleware that handles your errors
@@ -104,5 +105,11 @@
 
     return req.session.customerId;
   }
+
+  /* Allows for us to specify random configurations for the app my dropping files in the ./config/ directory */
+  helpers.hasConfig = function(config) {
+    return fs.existsSync("./runtime_config/"+config)
+  }
+
   module.exports = helpers;
 }());

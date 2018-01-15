@@ -271,7 +271,7 @@
 
                     //Simulate a login failure for the google IDP for no good reason just yet
                     if (identityProvider == "BUTTERCUP_GAMES"){
-                        var someConfigNotCompatabileWithButtercupAuth = process.env.BREAK_BUTTERCUP
+                        var someConfigNotCompatabileWithButtercupAuth = helpers.hasConfig("break_buttercup")
 
                         if (someConfigNotCompatabileWithButtercupAuth) {
                             callback("Configuration BREAK_BUTTERCUP read from environment variable is not compatible with the Buttercup Games identity provider. Please remove this environment variable")

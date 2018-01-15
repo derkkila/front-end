@@ -23,7 +23,7 @@ This application has been coded to behave specific ways based on various configu
   </tr>
   <tr>
     <td>Simulate login failures for Buttercup Game IdP</td>
-    <td>Set environment variable in front-end container BREAK_BUTTERCUP to any value. Remove environment variable to restore operations</td>
+    <td>Touch file break_buttercup in ./runtime_config/ folder on front-end container. Remove file to restore operations</td>
     <td>Will fail all authorization requests for Buttercup Games IdP and emit error log to fron-end winston logs</td>
   </tr>
   <tr>
