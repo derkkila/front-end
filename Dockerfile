@@ -10,11 +10,13 @@ COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/
 RUN chown myuser /usr/src/app/yarn.lock
 
+RUN mkdir ./runtime_config/
+RUN chmod 777 ./runtime_config/
+
 USER myuser
 RUN yarn install
 
 COPY . /usr/src/app
-RUN mkdir ./runtime_config/
 
 # Start the app
 CMD ["/usr/local/bin/npm", "start"]
