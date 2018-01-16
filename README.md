@@ -6,7 +6,8 @@ Front-end app
 ---
 Front-end application written in [Node.js](https://nodejs.org/en/) that puts together all of the microservices under [microservices-demo](https://github.com/microservices-demo/microservices-demo).
 
-#Situational configurations
+# Situational configurations
+
 This application has been coded to behave specific ways based on various configurations and inputs to simulate real world issues application developers will face. The table below outlines these configurations
 <table>
   <thead>
@@ -23,13 +24,13 @@ This application has been coded to behave specific ways based on various configu
   </tr>
   <tr>
     <td>Simulate login failures for Buttercup Game IdP</td>
-    <td>Touch file break_buttercup in ./runtime_config/ folder on front-end container. Remove file to restore operations</td>
-    <td>Will fail all authorization requests for Buttercup Games IdP and emit error log to fron-end winston logs</td>
+    <td>Touch file ./runtime_config/break_buttercup on front-end container. Remove file to restore operations</td>
+    <td>Will fail all authorization requests for Buttercup Games IdP and emit error log to front-end winston logs</td>
   </tr>
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>Simulate intermittent 500 failures to page requests</td>
+    <td>Modify file ./runtime_config/request_failure_percentage with single number on line one between 0 and 100 representing the percent probability that the request will fail. 100 will fail every request. Remove file to restore operations</td>
+    <td>Will result in http request from webserver returning a 500 error and emit error log to front-end winston logs</td>
   </tr>
   <tr>
     <td></td>

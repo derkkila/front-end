@@ -275,7 +275,7 @@
                         var someConfigNotCompatabileWithButtercupAuth = helpers.hasConfig("break_buttercup")
 
                         if (someConfigNotCompatabileWithButtercupAuth) {
-                            callback("Configuration BREAK_BUTTERCUP read from environment variable is not compatible with the Buttercup Games identity provider. Please remove this environment variable")
+                            callback("Configuration break_buttercup read from ./runtime_config/ folder is not compatible with the Buttercup Games identity provider. Please remove this configuration to restore operation")
                             return;
                         }
                     }

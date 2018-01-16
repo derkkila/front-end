@@ -16,6 +16,7 @@
 
   helpers.errorHandler = function(err, req, res, next) {
     logger.error(logger.exception.getAllInfo(err))
+    
     var ret = {
       message: err.message,
       error:   err
@@ -25,7 +26,7 @@
       send("Uh oh! Something went terribly wrong here. My Bad!");
   };
 
-  helpers.sessionMiddleware = function(err, req, res, next) {
+  helpers.sessionMiddleware = function(req, res, next) {
     if(!req.cookies.logged_in) {
       res.session.customerId = null;
     }
@@ -109,6 +110,30 @@
   /* Allows for us to specify random configurations for the app my dropping files in the ./config/ directory */
   helpers.hasConfig = function(config) {
     return fs.existsSync("./runtime_config/"+config)
+  }
+
+  /* This function will trigger a 500 response to the user for a random X% of the requests where X is the number specified in the request_failure_percentage config file */
+  helpers.intermittentRequestFailure = function(req, res, next) {
+    var failurePercentage = NaN
+    try {
+      var file_str = fs.readFileSync("./runtime_config/request_failure_percentage", "utf8")
+      failurePercentage = parseInt(file_str, 10)
+
+    } catch(err) {
+      //Assuming the error we catch is associated to the inability to read or parse the file
+    }
+
+   if (isNaN(failurePercentage)) return next();
+
+   if (failurePercentage < 0 || failurePercentage > 100) {
+    logger.warn("Ignoring failurePercentage specified at ./runtime_config/request_failure_percentage because it is not between 0 and 100. Value is " + failurePercentage)
+    return next();
+   }
+
+   var randomNum = Math.floor(Math.random()*101)   
+   if (randomNum > failurePercentage) return next();
+
+   return next(new Error("Failed to process request at this time. The flux dependecy is unavailable"));
   }
 
   module.exports = helpers;
