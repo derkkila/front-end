@@ -33,9 +33,6 @@ app.use(helpers.rewriteSlash);
 app.use(morgan("combined", {}));
 app.use(metrics);
 
-//Include middleware router to fail pages based on config
-app.use(helpers.intermittentRequestFailure)
-
 app.use(express.static("public"));
 if(process.env.SESSION_REDIS) {
     logger.info('Using the redis based session manager');
@@ -45,6 +42,9 @@ else {
     logger.info('Using local session manager');
     app.use(session(config.session));
 }
+
+//Include middleware router to fail pages based on config
+app.use(helpers.intermittentRequestFailure)
 
 app.use(bodyParser.json());
 app.use(cookieParser());
