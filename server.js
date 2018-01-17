@@ -43,9 +43,6 @@ else {
     app.use(session(config.session));
 }
 
-//Include middleware router to fail pages based on config
-app.use(helpers.intermittentRequestFailure)
-
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helpers.sessionMiddleware);
@@ -60,6 +57,9 @@ process.argv.forEach(function (val, index, array) {
     }
   }
 });
+
+//Include middleware router to fail pages based on config
+app.use(helpers.intermittentRequestFailure)
 
 /* Mount API endpoints */
 app.use(cart);
