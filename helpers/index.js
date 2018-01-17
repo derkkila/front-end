@@ -26,10 +26,11 @@
       send("Uh oh! Something went terribly wrong here. My Bad!");
   };
 
-  helpers.sessionMiddleware = function(req, res, next) {
+  helpers.sessionMiddleware = function(err, req, res, next) {
     if(!req.cookies.logged_in) {
       req.session.customerId = null;
     }
+    next();
   };
 
   /* Responds with the given body and status 200 OK  */
@@ -131,7 +132,10 @@
    }
 
    var randomNum = Math.floor(Math.random()*101)   
-   if (randomNum > failurePercentage) return next();
+   if (randomNum > failurePercentage) {
+    logger.info("ABOUT TO RETURN NEXT")
+    return next();
+    }
 
    return next(new Error("Failed to process request at this time. The flux dependecy is unavailable"));
   }
