@@ -30,7 +30,7 @@
     if(!req.cookies.logged_in) {
       req.session.customerId = null;
     }
-    next();
+    next(err);
   };
 
   /* Responds with the given body and status 200 OK  */
