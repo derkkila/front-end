@@ -13,27 +13,45 @@ var request      = require("request")
   , orders       = require("./api/orders")
   , user         = require("./api/user")
   , metrics      = require("./api/metrics")
+  , common       = require('winston/lib/winston/common')
   , app          = express()
 
 
 //Initiate winston logging please
-const logger = require("winston")
+const logger = require('winston');
+
+function myFormat(options) {
+  options.formatter = null
+  options.label = helpers.getSessionId(logger.req)
+  return common.log(options);
+}
+
 var consoleLoggingConfig = {
       timestamp: true,
       level: process.env.LOG_LEVEL ? process.env.LOG_LEVEL : "info",
       handleExceptions: true,
-      humanReadableUnhandledException: true
+      humanReadableUnhandledException: true,
+      formatter: myFormat
 }
+
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, consoleLoggingConfig)
 logger.info('Winston logging initiated', consoleLoggingConfig)
+app.use(helpers.attachReqToLogger)
 module.exports=logger
+//End of winston logging initiation
 
 app.use(helpers.rewriteSlash);
-app.use(morgan("combined", {}));
+
+//Configure morgan logging
+morgan.token('sessionId', function getSessionId (req) {
+  return helpers.getSessionId(req);
+})
+app.use(morgan(morgan.combined + ' sessionId=:sessionId'));
+
+
 app.use(metrics);
 
-app.use(express.static("public"));
 if(process.env.SESSION_REDIS) {
     logger.info('Using the redis based session manager');
     app.use(session(config.session_redis));
@@ -42,6 +60,8 @@ else {
     logger.info('Using local session manager');
     app.use(session(config.session));
 }
+
+app.use(express.static("public"));
 
 app.use(bodyParser.json());
 app.use(cookieParser());

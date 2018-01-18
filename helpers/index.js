@@ -108,6 +108,14 @@
     return req.session.customerId;
   }
 
+  helpers.getSessionId = function(req) {
+    if (req && req.session && req.session.id) {
+      return req.session.id
+    }
+
+    return;
+  }  
+
   /* Allows for us to specify random configurations for the app my dropping files in the ./config/ directory */
   helpers.hasConfig = function(config) {
     return fs.existsSync("./runtime_config/"+config)
@@ -133,11 +141,16 @@
 
    var randomNum = Math.floor(Math.random()*101)   
    if (randomNum > failurePercentage) {
-    logger.info("ABOUT TO RETURN NEXT")
     return next();
     }
 
    return next(new Error("Failed to process request at this time. The flux dependecy is unavailable"));
+  }
+
+  /* Helper to ensure that the winston logger has the request object on it to obtain the sessionId */
+  helpers.attachReqToLogger = function(req, res, next) {
+    logger.req = req
+    next();
   }
 
   module.exports = helpers;
