@@ -81,6 +81,8 @@ process.argv.forEach(function (val, index, array) {
 //Include middleware router to fail pages based on config
 app.use(helpers.intermittentRequestFailure)
 
+app.use(helpers.logHeaders)
+
 /* Mount API endpoints */
 app.use(cart);
 app.use(catalogue);

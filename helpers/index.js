@@ -148,6 +148,12 @@
   }
 
   /* Helper to ensure that the winston logger has the request object on it to obtain the sessionId */
+  helpers.logHeaders = function(req, res, next) {
+    logger.info("HEADER JSON " + JSON.stringify(req.headers))
+    next();
+  }
+
+  /* Helper to ensure that the winston logger has the request object on it to obtain the sessionId */
   helpers.attachReqToLogger = function(req, res, next) {
     logger.req = req
     next();
