@@ -17,6 +17,10 @@ var request      = require("request")
   , app          = express()
 
 
+//App configs
+//Ensure x-forwarded-for is looked at for the IP address
+app.set('trust proxy', true)
+
 //Initiate winston logging please
 const logger = require('winston');
 
@@ -44,9 +48,7 @@ module.exports=logger
 app.use(helpers.rewriteSlash);
 
 //Configure morgan logging
-morgan.token('sessionId', function getSessionId (req) {
-  return helpers.getSessionId(req);
-})
+morgan.token('sessionId', function getSessionId (req) { return helpers.getSessionId(req); })
 app.use(morgan(morgan.combined + ' sessionId=:sessionId'));
 
 
@@ -80,8 +82,6 @@ process.argv.forEach(function (val, index, array) {
 
 //Include middleware router to fail pages based on config
 app.use(helpers.intermittentRequestFailure)
-
-app.use(helpers.logHeaders)
 
 /* Mount API endpoints */
 app.use(cart);
