@@ -49,7 +49,7 @@ app.use(helpers.rewriteSlash);
 
 //Configure morgan logging
 morgan.token('sessionId', function getSessionId (req) { return helpers.getSessionId(req); })
-app.use(morgan(morgan.combined + ' sessionId=:sessionId'));
+app.use(morgan(morgan.combined + ' sessionId=:sessionId :response-time ms'));
 
 
 app.use(metrics);
