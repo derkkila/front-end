@@ -5,6 +5,7 @@
     , request   = require("request")
     , endpoints = require("../endpoints")
     , helpers   = require("../../helpers")
+    , logger    = require("winston")
     , app       = express()
 
   app.get("/catalogue/images*", function (req, res, next) {
@@ -15,6 +16,9 @@
   });
 
   app.get("/catalogue*", function (req, res, next) {
+    //This line of code is here on purpose to simulate a defect in the application. See README for more details
+    req.url = req.url.replace("tags=sport", "")
+    
     helpers.simpleHttpRequest(endpoints.catalogueUrl + req.url.toString(), res, next);
   });
 

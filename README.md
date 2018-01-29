@@ -33,9 +33,9 @@ This application has been coded to behave specific ways based on various configu
     <td>Will result in http request from webserver returning a 500 error and emit error log to front-end winston logs</td>
   </tr>
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>Defect in code: Sport filter does not work as intended</td>
+    <td>Simply select and apply the sport filter on the catalog page</td>
+    <td>The code improperly ignores the filter and returns all socks to the end user</td>
   </tr>
   <tr>
     <td></td>
