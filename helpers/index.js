@@ -126,7 +126,7 @@
   helpers.intermittentRequestFailure = function(req, res, next) {
     //This "bug" is being introduced on purpose to slow down every request by some specific amount of time
     //we'll use it to showcase one of our use cases
-    sleep.sleep(100)
+    sleep(100)
 
     var failurePercentage = NaN
     try {
