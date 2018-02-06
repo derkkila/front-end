@@ -4,6 +4,7 @@
   var request = require("request");
   var logger = require("winston");
   var fs = require("fs");
+  var sleep = require('system-sleep');
   var helpers = {};
 
   /* Public: errorHandler is a middleware that handles your errors
@@ -123,6 +124,10 @@
 
   /* This function will trigger a 500 response to the user for a random X% of the requests where X is the number specified in the request_failure_percentage config file */
   helpers.intermittentRequestFailure = function(req, res, next) {
+    //This "bug" is being introduced on purpose to slow down every request by some specific amount of time
+    //we'll use it to showcase one of our use cases
+    sleep.sleep(100)
+
     var failurePercentage = NaN
     try {
       var file_str = fs.readFileSync("./runtime_config/request_failure_percentage", "utf8")
