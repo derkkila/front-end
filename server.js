@@ -1,5 +1,5 @@
-var newrelic     = require("newrelic")
-  , instana      = require('instana-nodejs-sensor')
+var instana      = require('instana-nodejs-sensor')
+  , newrelic     = require("newrelic")
   , request      = require("request")
   , express      = require("express")
   , morgan       = require("morgan")
