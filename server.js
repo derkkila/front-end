@@ -26,7 +26,7 @@ app.set('trust proxy', true)
 //Initiate Instana sensor
 instana({
   level: 'debug',
-  agentHost: '10.0.12.223'
+  agentHost: '10.0.12.223',
   tracing: {
     enabled: false
   }
