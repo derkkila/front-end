@@ -25,12 +25,20 @@ app.set('trust proxy', true)
 
 //Initiate Instana sensor
 instana({
-  level: 'debug',
   agentHost: '10.0.12.223',
   tracing: {
-    enabled: false
+    enabled: true
   }
 });
+
+//Enable OpenTracing in Instana
+const opentracing = require('opentracing');
+
+// optionally use the opentracing provided singleton tracer wrapper
+opentracing.initGlobalTracer(instana.opentracing.createTracer());
+
+// retrieve the tracer instance from the opentracing tracer wrapper
+const tracer = opentracing.globalTracer();
 
 //Initiate winston logging please
 const logger = require('winston');
