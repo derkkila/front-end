@@ -1,4 +1,5 @@
 var newrelic     = require("newrelic")
+  , instana      = require('instana-nodejs-sensor')
   , request      = require("request")
   , express      = require("express")
   , morgan       = require("morgan")
@@ -21,6 +22,13 @@ var newrelic     = require("newrelic")
 //App configs
 //Ensure x-forwarded-for is looked at for the IP address
 app.set('trust proxy', true)
+
+//Initiate Instana sensor
+instana({
+  tracing: {
+    enabled: false
+  }
+});
 
 //Initiate winston logging please
 const logger = require('winston');
