@@ -44,7 +44,7 @@
 		navigationStart: undefined,
 		responseStart: undefined,
 		t_start: undefined,	// t_start that came off the cookie
-		cached_t_start: undefined,	// cached value of t_start once we know its real value
+		cached_t_start: 0,	// cached value of t_start once we know its real value   -- setting to zero to fix a bug in t_resp & t_page.  should be backported 'soon' from SOASTA version
 		cached_xhr_start: undefined,	// cached value of xhr t_start once we know its real value
 		t_fb_approx: undefined,	// approximate first byte time for browsers that don't support navtiming
 		r: undefined,		// referrer from the cookie

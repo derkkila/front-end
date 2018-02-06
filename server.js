@@ -1,4 +1,5 @@
-var request      = require("request")
+var newrelic     = require("newrelic")
+  , request      = require("request")
   , express      = require("express")
   , morgan       = require("morgan")
   , path         = require("path")
@@ -49,7 +50,7 @@ app.use(helpers.rewriteSlash);
 
 //Configure morgan logging
 morgan.token('sessionId', function getSessionId (req) { return helpers.getSessionId(req); })
-app.use(morgan(morgan.combined + ' sessionId=:sessionId :response-time ms'));
+app.use(morgan(morgan.combined + ' sessionId=:sessionId responseTimeMs=:response-time'));
 
 
 app.use(metrics);
