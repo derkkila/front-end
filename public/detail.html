@@ -27,7 +27,8 @@
         ineum('apiKey', 'P_0Wu1MmR02mlM7pYuom5A');
    
         // set the name of a page on which this load/errors/calls happened
-        ineum('page', 'detail');
+        ineum('page', location.pathname );
+
         //ineum('traceId', 'backendTraceId');    //replace 'backendTraceId with the appropriate expression for retrieval
     </script>
 
@@ -56,7 +57,7 @@
 
       BOOMR.addVar({ "ua_raw" : navigator.userAgent ,
                      "appName"   : "SplunkSocks",
-                     "page" : document.title   });
+                     "page" : location.pathname   });
 
     </script>
 
